@@ -1,2 +1,2 @@
-# HEC-DB-Scripts
+# PCO-EU-DB-SCRIPTS
 Personal scripts for database
