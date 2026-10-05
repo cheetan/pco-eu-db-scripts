@@ -5,4 +5,8 @@ LogFile.log
 SoE.txt
 SQLScripts.sql
 SoE.md
+spc_test.py
 SoE_Archive
+SnowAlert.csv
+SnowCase.csv
+SPCReport.csv
