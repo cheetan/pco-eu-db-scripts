@@ -13,3 +13,6 @@ SPCReport.csv
 SnowAlert.xlsx
 SnowCase.xlsx
 SPCReport.xlsx
+__pycache__
+shiftHODashboard/dashboard.html
+shiftHODashboard/ho_status.json
