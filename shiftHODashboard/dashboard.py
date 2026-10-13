@@ -13,6 +13,13 @@ from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 import xml.etree.ElementTree as ET
 
+try:
+    from spc_download  import download_report   as _spc_download
+    from snow_download import download_reports  as _snow_download
+    _DOWNLOADS_AVAILABLE = True
+except ImportError:
+    _DOWNLOADS_AVAILABLE = False
+
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
 SNOW_ALERT  = os.path.join(SCRIPT_DIR, "SnowAlert.xlsx")
 SNOW_CASE   = os.path.join(SCRIPT_DIR, "SnowCase.xlsx")
@@ -849,12 +856,26 @@ function filterPri(cid, cls, btn) {{
 # ── entry point ───────────────────────────────────────────────────────────────
 
 def main():
+    # Strip --refresh flag before shift-name parsing
+    raw_args   = sys.argv[1:]
+    do_refresh = "--refresh" in raw_args
+    raw_args   = [a for a in raw_args if a != "--refresh"]
+
     # Optional positional arg: morning | evening | night
     valid = set(SHIFT_HOURS.keys())
-    arg   = sys.argv[1].lower() if len(sys.argv) > 1 else None
+    arg   = raw_args[0].lower() if raw_args else None
     if arg and arg not in valid:
-        print(f"Usage: dashboard.py [morning|evening|night]", file=sys.stderr)
+        print(f"Usage: dashboard.py [morning|evening|night] [--refresh]", file=sys.stderr)
         sys.exit(1)
+
+    if do_refresh:
+        if not _DOWNLOADS_AVAILABLE:
+            print("Download scripts not found — skipping refresh.")
+        else:
+            print("Refreshing SPC data …")
+            _spc_download()
+            print("Refreshing Snow data …")
+            _snow_download(do_alert=True, do_case=True)
 
     now_eet    = datetime.now(EET)
     shift_name = arg or detect_shift(now_eet)
