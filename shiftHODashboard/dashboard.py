@@ -855,6 +855,25 @@ function filterPri(cid, cls, btn) {{
 
 # ── entry point ───────────────────────────────────────────────────────────────
 
+def notify_teams(shift_label, snow_alerts, snow_cases, spc_current, spc_next,
+                 spc_lr, spc_updated):
+    total_spc = spc_current + spc_next + spc_lr + spc_updated
+    message = (
+        f"📊 Shift Dashboard ready — {shift_label}\n"
+        f"🔔 Snow Alerts: {snow_alerts}  |  📋 Snow Cases: {snow_cases}  |  "
+        f"🎫 SPC Tickets: {total_spc} "
+        f"(Current: {spc_current}, Next: {spc_next}, "
+        f"Longrunners: {spc_lr}, Updated: {spc_updated})"
+    )
+    trigger_file = os.path.join(SCRIPT_DIR, "dashboard_ready.txt")
+    try:
+        with open(trigger_file, "w", encoding="utf-8") as f:
+            f.write(message)
+        print("Teams trigger file written — Power Automate will post the notification.")
+    except Exception as e:
+        print(f"Teams trigger file error: {e}")
+
+
 def main():
     # Strip --refresh flag before shift-name parsing
     raw_args   = sys.argv[1:]
@@ -928,6 +947,8 @@ def main():
     print(f"Saved  → {OUT_HTML}")
     webbrowser.open(f"file://{OUT_HTML}")
     print("Opened in browser.")
+    notify_teams(shift_label, len(ar_filtered), len(cr_filtered),
+                 len(sr_current), len(sr_next), len(sr_lr), len(sr_updated))
 
 
 if __name__ == "__main__":
