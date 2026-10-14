@@ -18,3 +18,5 @@ shiftHODashboard/dashboard.html
 shiftHODashboard/ho_status.json
 shiftHODashboard/spc_session.json
 shiftHODashboard/snow_session.json
+shiftHODashboard/dashboard_auto_err.log
+shiftHODashboard/dashboard_auto.log
